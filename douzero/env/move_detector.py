@@ -60,6 +60,12 @@ def get_move_type(move):
     if is_continuous_seq(move):
         return {'type': TYPE_8_SERIAL_SINGLE, 'rank': move[0], 'len': len(move)}
 
+    if move_size == 5:
+        if len(move_dict) == 2:
+            return {'type': TYPE_7_3_2, 'rank': move[2]}
+        else:
+            return {'type': TYPE_15_WRONG}
+
     count_dict = collections.defaultdict(int)
     for c, n in move_dict.items():
         count_dict[n] += 1
