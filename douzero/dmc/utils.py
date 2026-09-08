@@ -16,11 +16,15 @@ from douzero.env.env import _cards2array
 Card2Column = {3: 0, 4: 1, 5: 2, 6: 3, 7: 4, 8: 5, 9: 6, 10: 7,
                11: 8, 12: 9, 13: 10, 14: 11, 17: 12}
 
-NumOnes2Array = {0: np.array([0, 0, 0, 0]),
-                 1: np.array([1, 0, 0, 0]),
-                 2: np.array([1, 1, 0, 0]),
-                 3: np.array([1, 1, 1, 0]),
-                 4: np.array([1, 1, 1, 1])}
+NumOnes2Array = {0: np.array([0, 0, 0, 0, 0, 0, 0, 0]),
+                 1: np.array([1, 0, 0, 0, 0, 0, 0, 0]),
+                 2: np.array([1, 1, 0, 0, 0, 0, 0, 0]),
+                 3: np.array([1, 1, 1, 0, 0, 0, 0, 0]),
+                 4: np.array([1, 1, 1, 1, 0, 0, 0, 0]),
+                 5: np.array([1, 1, 1, 1, 1, 0, 0, 0]),
+                 6: np.array([1, 1, 1, 1, 1, 1, 0, 0]),
+                 7: np.array([1, 1, 1, 1, 1, 1, 1, 0]),
+                 8: np.array([1, 1, 1, 1, 1, 1, 1, 1])}
 
 shandle = logging.StreamHandler()
 shandle.setFormatter(
@@ -61,9 +65,9 @@ def get_batch(free_queue,
 
 def create_optimizers(flags, learner_model):
     """
-    Create three optimizers for the three positions
+    Create four optimizers for the four positions
     """
-    positions = ['landlord', 'landlord_up', 'landlord_down']
+    positions = ['landlord', 'landlord_down1', 'landlord_down2', 'landlord_down3']
     optimizers = {}
     for position in positions:
         optimizer = torch.optim.RMSprop(
@@ -79,22 +83,22 @@ def create_buffers(flags, device_iterator):
     """
     We create buffers for different positions as well as
     for different devices (i.e., GPU). That is, each device
-    will have three buffers for the three positions.
+    will have four buffers for the four positions.
     """
     T = flags.unroll_length
-    positions = ['landlord', 'landlord_up', 'landlord_down']
+    positions = ['landlord', 'landlord_down1', 'landlord_down2', 'landlord_down3']
     buffers = {}
     for device in device_iterator:
         buffers[device] = {}
         for position in positions:
-            x_dim = 319 if position == 'landlord' else 430
+            x_dim = 723 if position == 'landlord' else 1055
             specs = dict(
                 done=dict(size=(T,), dtype=torch.bool),
                 episode_return=dict(size=(T,), dtype=torch.float32),
                 target=dict(size=(T,), dtype=torch.float32),
                 obs_x_no_action=dict(size=(T, x_dim), dtype=torch.int8),
-                obs_action=dict(size=(T, 54), dtype=torch.int8),
-                obs_z=dict(size=(T, 5, 162), dtype=torch.int8),
+                obs_action=dict(size=(T, 108), dtype=torch.int8),
+                obs_z=dict(size=(T, 10, 432), dtype=torch.int8),
             )
             _buffers: Buffers = {key: [] for key in specs}
             for _ in range(flags.num_buffers):
@@ -113,7 +117,7 @@ def act(i, device, free_queue, full_queue, model, buffers, flags):
     data from the environment and send the data to buffer. It uses
     a free queue and full queue to syncup with the main process.
     """
-    positions = ['landlord', 'landlord_up', 'landlord_down']
+    positions = ['landlord', 'landlord_down1', 'landlord_down2', 'landlord_down3']
     try:
         T = flags.unroll_length
         log.info('Device %s Actor %i started.', str(device), i)

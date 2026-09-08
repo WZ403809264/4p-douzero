@@ -4,9 +4,9 @@ import numpy as np
 
 deck = []
 for i in range(3, 15):
-    deck.extend([i for _ in range(4)])
-deck.extend([17 for _ in range(4)])
-deck.extend([20, 30])
+    deck.extend([i for _ in range(8)])
+deck.extend([17 for _ in range(8)])
+deck.extend([20, 20, 30, 30])
 
 def get_parser():
     parser = argparse.ArgumentParser(description='DouZero: random data generator')
@@ -17,10 +17,11 @@ def get_parser():
 def generate():
     _deck = deck.copy()
     np.random.shuffle(_deck)
-    card_play_data = {'landlord': _deck[:20],
-                      'landlord_up': _deck[20:37],
-                      'landlord_down': _deck[37:54],
-                      'three_landlord_cards': _deck[17:20],
+    card_play_data = {'landlord': _deck[:33],
+                      'landlord_down1': _deck[33:58],
+                      'landlord_down2': _deck[58:83],
+                      'landlord_down3': _deck[83:108],
+                      'three_landlord_cards': _deck[25:33],
                       }
     for key in card_play_data:
         card_play_data[key].sort()

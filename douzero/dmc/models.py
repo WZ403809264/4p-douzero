@@ -11,13 +11,18 @@ from torch import nn
 class LandlordLstmModel(nn.Module):
     def __init__(self):
         super().__init__()
-        self.lstm = nn.LSTM(162, 128, batch_first=True)
-        self.dense1 = nn.Linear(373 + 128, 512)
-        self.dense2 = nn.Linear(512, 512)
-        self.dense3 = nn.Linear(512, 512)
-        self.dense4 = nn.Linear(512, 512)
-        self.dense5 = nn.Linear(512, 512)
-        self.dense6 = nn.Linear(512, 1)
+        self.lstm = nn.LSTM(432, 256, batch_first=True)
+        self.dense1 = nn.Linear(1087, 1024)
+        self.dense2 = nn.Linear(1024, 1024)
+        self.dense3 = nn.Linear(1024, 1024)
+        self.dense4 = nn.Linear(1024, 1024)
+        self.dense5 = nn.Linear(1024, 1024)
+        self.dense6 = nn.Linear(1024, 1024)
+        self.dense7 = nn.Linear(1024, 1024)
+        self.dense8 = nn.Linear(1024, 1024)
+        self.dense9 = nn.Linear(1024, 1024)
+        self.dense10 = nn.Linear(1024, 1024)
+        self.dense11 = nn.Linear(1024, 1)
 
     def forward(self, z, x, return_value=False, flags=None):
         lstm_out, (h_n, _) = self.lstm(z)
@@ -34,6 +39,16 @@ class LandlordLstmModel(nn.Module):
         x = self.dense5(x)
         x = torch.relu(x)
         x = self.dense6(x)
+        x = torch.relu(x)
+        x = self.dense7(x)
+        x = torch.relu(x)
+        x = self.dense8(x)
+        x = torch.relu(x)
+        x = self.dense9(x)
+        x = torch.relu(x)
+        x = self.dense10(x)
+        x = torch.relu(x)
+        x = self.dense11(x)
         if return_value:
             return dict(values=x)
         else:
@@ -46,13 +61,18 @@ class LandlordLstmModel(nn.Module):
 class FarmerLstmModel(nn.Module):
     def __init__(self):
         super().__init__()
-        self.lstm = nn.LSTM(162, 128, batch_first=True)
-        self.dense1 = nn.Linear(484 + 128, 512)
-        self.dense2 = nn.Linear(512, 512)
-        self.dense3 = nn.Linear(512, 512)
-        self.dense4 = nn.Linear(512, 512)
-        self.dense5 = nn.Linear(512, 512)
-        self.dense6 = nn.Linear(512, 1)
+        self.lstm = nn.LSTM(432, 256, batch_first=True)
+        self.dense1 = nn.Linear(1419, 1024)
+        self.dense2 = nn.Linear(1024, 1024)
+        self.dense3 = nn.Linear(1024, 1024)
+        self.dense4 = nn.Linear(1024, 1024)
+        self.dense5 = nn.Linear(1024, 1024)
+        self.dense6 = nn.Linear(1024, 1024)
+        self.dense7 = nn.Linear(1024, 1024)
+        self.dense8 = nn.Linear(1024, 1024)
+        self.dense9 = nn.Linear(1024, 1024)
+        self.dense10 = nn.Linear(1024, 1024)
+        self.dense11 = nn.Linear(1024, 1)
 
     def forward(self, z, x, return_value=False, flags=None):
         lstm_out, (h_n, _) = self.lstm(z)
@@ -69,6 +89,16 @@ class FarmerLstmModel(nn.Module):
         x = self.dense5(x)
         x = torch.relu(x)
         x = self.dense6(x)
+        x = torch.relu(x)
+        x = self.dense7(x)
+        x = torch.relu(x)
+        x = self.dense8(x)
+        x = torch.relu(x)
+        x = self.dense9(x)
+        x = torch.relu(x)
+        x = self.dense10(x)
+        x = torch.relu(x)
+        x = self.dense11(x)
         if return_value:
             return dict(values=x)
         else:
@@ -81,12 +111,13 @@ class FarmerLstmModel(nn.Module):
 # Model dict is only used in evaluation but not training
 model_dict = {}
 model_dict['landlord'] = LandlordLstmModel
-model_dict['landlord_up'] = FarmerLstmModel
-model_dict['landlord_down'] = FarmerLstmModel
+model_dict['landlord_down1'] = FarmerLstmModel
+model_dict['landlord_down2'] = FarmerLstmModel
+model_dict['landlord_down3'] = FarmerLstmModel
 
 class Model:
     """
-    The wrapper for the three models. We also wrap several
+    The wrapper for the four models. We also wrap several
     interfaces such as share_memory, eval, etc.
     """
     def __init__(self, device=0):
@@ -94,8 +125,9 @@ class Model:
         if not device == "cpu":
             device = 'cuda:' + str(device)
         self.models['landlord'] = LandlordLstmModel().to(torch.device(device))
-        self.models['landlord_up'] = FarmerLstmModel().to(torch.device(device))
-        self.models['landlord_down'] = FarmerLstmModel().to(torch.device(device))
+        self.models['landlord_down1'] = FarmerLstmModel().to(torch.device(device))
+        self.models['landlord_down2'] = FarmerLstmModel().to(torch.device(device))
+        self.models['landlord_down3'] = FarmerLstmModel().to(torch.device(device))
 
     def forward(self, position, z, x, training=False, flags=None):
         model = self.models[position]
@@ -103,13 +135,15 @@ class Model:
 
     def share_memory(self):
         self.models['landlord'].share_memory()
-        self.models['landlord_up'].share_memory()
-        self.models['landlord_down'].share_memory()
+        self.models['landlord_down1'].share_memory()
+        self.models['landlord_down2'].share_memory()
+        self.models['landlord_down3'].share_memory()
 
     def eval(self):
         self.models['landlord'].eval()
-        self.models['landlord_up'].eval()
-        self.models['landlord_down'].eval()
+        self.models['landlord_down1'].eval()
+        self.models['landlord_down2'].eval()
+        self.models['landlord_down3'].eval()
 
     def parameters(self, position):
         return self.models[position].parameters()

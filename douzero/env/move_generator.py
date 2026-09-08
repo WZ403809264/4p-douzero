@@ -94,23 +94,27 @@ class MovesGener(object):
     def gen_type_4_bomb(self):
         self.bomb_moves = []
         for k, v in self.cards_dict.items():
-            if v == 4:
+            if v >= 4:
                 self.bomb_moves.append([k, k, k, k])
+            if v >= 5:
+                self.bomb_moves.append([k, k, k, k, k])
+            if v >= 6:
+                self.bomb_moves.append([k, k, k, k, k, k])
+            if v >= 7:
+                self.bomb_moves.append([k, k, k, k, k, k, k])
+            if v >= 8:
+                self.bomb_moves.append([k, k, k, k, k, k, k, k])
         return self.bomb_moves
 
     def gen_type_5_king_bomb(self):
+        pair_mvs = []
+        for k, v in self.cards_dict.items():
+            if v >= 2:
+                pair_mvs.append([k, k])
         self.final_bomb_moves = []
-        if 20 in self.cards_list and 30 in self.cards_list:
-            self.final_bomb_moves.append([20, 30])
+        if [20, 20] in pair_mvs and [30, 30] in pair_mvs:
+            self.final_bomb_moves.append([20, 20, 30, 30])
         return self.final_bomb_moves
-
-    def gen_type_6_3_1(self):
-        result = []
-        for t in self.single_card_moves:
-            for i in self.triple_cards_moves:
-                if t[0] != i[0]:
-                    result.append(t+i)
-        return result
 
     def gen_type_7_3_2(self):
         result = list()
@@ -139,22 +143,6 @@ class MovesGener(object):
 
         return self._gen_serial_moves(single_triples, MIN_TRIPLES, repeat=3, repeat_num=repeat_num)
 
-    def gen_type_11_serial_3_1(self, repeat_num=0):
-        serial_3_moves = self.gen_type_10_serial_triple(repeat_num=repeat_num)
-        serial_3_1_moves = list()
-
-        for s3 in serial_3_moves:  # s3 is like [3,3,3,4,4,4]
-            s3_set = set(s3)
-            new_cards = [i for i in self.cards_list if i not in s3_set]
-
-            # Get any s3_len items from cards
-            subcards = select(new_cards, len(s3_set))
-
-            for i in subcards:
-                serial_3_1_moves.append(s3 + i)
-
-        return list(k for k, _ in itertools.groupby(serial_3_1_moves))
-
     def gen_type_12_serial_3_2(self, repeat_num=0):
         serial_3_moves = self.gen_type_10_serial_triple(repeat_num=repeat_num)
         serial_3_2_moves = list()
@@ -171,34 +159,6 @@ class MovesGener(object):
 
         return serial_3_2_moves
 
-    def gen_type_13_4_2(self):
-        four_cards = list()
-        for k, v in self.cards_dict.items():
-            if v == 4:
-                four_cards.append(k)
-
-        result = list()
-        for fc in four_cards:
-            cards_list = [k for k in self.cards_list if k != fc]
-            subcards = select(cards_list, 2)
-            for i in subcards:
-                result.append([fc]*4 + i)
-        return list(k for k, _ in itertools.groupby(result))
-
-    def gen_type_14_4_22(self):
-        four_cards = list()
-        for k, v in self.cards_dict.items():
-            if v == 4:
-                four_cards.append(k)
-
-        result = list()
-        for fc in four_cards:
-            cards_list = [k for k, v in self.cards_dict.items() if k != fc and v>=2]
-            subcards = select(cards_list, 2)
-            for i in subcards:
-                result.append([fc] * 4 + [i[0], i[0], i[1], i[1]])
-        return result
-
     # generate all possible moves from given cards
     def gen_moves(self):
         moves = []
@@ -207,13 +167,9 @@ class MovesGener(object):
         moves.extend(self.gen_type_3_triple())
         moves.extend(self.gen_type_4_bomb())
         moves.extend(self.gen_type_5_king_bomb())
-        moves.extend(self.gen_type_6_3_1())
         moves.extend(self.gen_type_7_3_2())
         moves.extend(self.gen_type_8_serial_single())
         moves.extend(self.gen_type_9_serial_pair())
         moves.extend(self.gen_type_10_serial_triple())
-        moves.extend(self.gen_type_11_serial_3_1())
         moves.extend(self.gen_type_12_serial_3_2())
-        moves.extend(self.gen_type_13_4_2())
-        moves.extend(self.gen_type_14_4_22())
         return moves
