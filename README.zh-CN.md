@@ -38,6 +38,12 @@ DouZero是一个为斗地主设计的强化学习框架。斗地主十分具有�
 
 <img width="500" src="https://douzero.org/public/demo.gif" alt="Demo" />
 
+## 声明
+本项目仅供研究和学习使用，禁止将本项目用于外挂、赌博等违法用途，否则后果自负。
+
+## 修改内容
+本项目改编自[DouZero](https://gitee.com/daochenzha/DouZero)项目，以适配四人斗地主规则。
+
 ## 引用
 如果您用到我们的项目，请添加以下引用：
 

@@ -136,58 +136,6 @@ class GameEnv(object):
         
         return str(''.join([EnvCard2RealCard[c] for c in action])), win_rate
 
-    def step2(self, action):
-        if len(action) > 0:
-            self.last_pid = self.acting_player_position
-
-        self.last_move_dict[
-            self.acting_player_position] = action.copy()
-
-        self.card_play_action_seq.append(action)
-        self.update_acting_player_hand_cards(action)
-
-        self.played_cards[self.acting_player_position] += action
-
-        if self.acting_player_position == 'landlord' and \
-                len(action) > 0 and \
-                len(self.three_landlord_cards) > 0:
-            for card in action:
-                if len(self.three_landlord_cards) > 0:
-                    if card in self.three_landlord_cards:
-                        self.three_landlord_cards.remove(card)
-                else:
-                    break
-        self.game_done()
-        if not self.game_over:
-            self.get_acting_player_position()
-            self.game_infoset = self.get_infoset()
-
-    def other_step(self, action):
-        if len(action) > 0:
-            self.last_pid = self.acting_player_position
-
-        self.last_move_dict[
-            self.acting_player_position] = action.copy()
-
-        self.card_play_action_seq.append(action)
-        self.update_other_player_hand_cards(action)
-
-        self.played_cards[self.acting_player_position] += action
-
-        if self.acting_player_position == 'landlord' and \
-                len(action) > 0 and \
-                len(self.three_landlord_cards) > 0:
-            for card in action:
-                if len(self.three_landlord_cards) > 0:
-                    if card in self.three_landlord_cards:
-                        self.three_landlord_cards.remove(card)
-                else:
-                    break
-        self.game_done()
-        if not self.game_over:
-            self.get_acting_player_position()
-            self.game_infoset = self.get_infoset()
-
     def get_last_move(self):
         last_move = []
         if len(self.card_play_action_seq) != 0:
@@ -230,11 +178,6 @@ class GameEnv(object):
         if action != []:
             for card in action:
                 self.info_sets[self.acting_player_position].player_hand_cards.remove(card)
-            self.info_sets[self.acting_player_position].player_hand_cards.sort()
-
-    def update_other_player_hand_cards(self, action):
-        if action != []:
-            del self.info_sets[self.acting_player_position].player_hand_cards[0:len(action)]
             self.info_sets[self.acting_player_position].player_hand_cards.sort()
 
     def get_legal_card_play_actions(self):

@@ -39,6 +39,13 @@ DouZero is a reinforcement learning framework for [DouDizhu](https://en.wikipedi
 
 <img width="500" src="https://douzero.org/public/demo.gif" alt="Demo" />
 
+## Declaration
+This project is for research and learning purposes. Do not use this project for illegal purposes such as cheating or gambling. The consequences of using this project for illegal purposes are your own responsibility.
+
+
+## Program modification content
+This project is modified from the original [DouZero](https://gitee.com/daochenzha/DouZero) project to adapt to the rules of 4-player DouDizhu.
+
 ## Cite this Work
 If you find this project helpful in your research, please cite our paper:
 
