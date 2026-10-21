@@ -20,7 +20,6 @@ setuptools.setup(
     install_requires=[
         'torch'
     ],
-    requires_python='>=3.6',
     classifiers=[
         "Programming Language :: Python :: 3.14",
         "Programming Language :: Python :: 3.13",
@@ -31,7 +30,6 @@ setuptools.setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.6",
-        "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
     ],
 )
